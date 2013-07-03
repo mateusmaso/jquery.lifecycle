@@ -1,14 +1,24 @@
 (function($) {
 
 	var observer = new MutationSummary({
-		queries: [{element: '[data-lifecycle]'}],
+		queries: [{element: '[lifecycle]'}],
 		callback: function (summaries) {
 			$(summaries[0].added).each(function(index, element) {
-				$(element).triggerHandler('insert');
+				if (element.whenInsert) {
+					$(element.whenInsert).each(function(index, callback) {
+						callback();
+					});
+					delete element.whenInsert;
+				}
 			});
 
 			$(summaries[0].removed).each(function(index, element) {
-				$(element).triggerHandler('remove');
+				if (element.whenRemove) {
+					$(element.whenRemove).each(function(index, callback) {
+						callback();
+					});
+					delete element.whenRemove;
+				}
 			});
 		}
 	});
@@ -16,12 +26,14 @@
 	$.fn.lifecycle = function(options) {
 		options = options || {};
 
-		if (options.insert) $(this).one('insert', options.insert);
-		if (options.remove) $(this).one('remove', options.remove);
+		element = this.get(0);
+		element.whenInsert = element.whenInsert || [];
+		element.whenRemove = element.whenRemove || [];
 
-		$(this).attr('data-lifecycle', '');
+		if (options.insert) element.whenInsert.push(options.insert);
+		if (options.remove) element.whenRemove.push(options.remove);
+
+		this.attr('lifecycle', '');
 	};
 
 })(jQuery)
-
-
