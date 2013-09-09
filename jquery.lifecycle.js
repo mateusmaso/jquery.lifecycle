@@ -1,39 +1,51 @@
 (function($) {
 
-  var observer = new MutationSummary({
-    queries: [{element: '[lifecycle]'}],
-    callback: function (summaries) {
-      $(summaries[0].added).each(function(index, element) {
-        if (element.whenInsert) {
-          $(element.whenInsert).each(function(index, callback) {
-            callback();
-          });
-          delete element.whenInsert;
-        }
-      });
+  var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
-      $(summaries[0].removed).each(function(index, element) {
-        if (element.whenRemove) {
-          $(element.whenRemove).each(function(index, callback) {
-            callback();
+  var lifecycles = function(node) {
+    var nodes = $(node).find('[lifecycle]').toArray();
+    $(node).is('[lifecycle]') && nodes.push(node);
+    return nodes;
+  };
+
+  var observer = new MutationObserver(function(mutations) {
+    $.each(mutations, function(index, mutation) {
+      if (mutation.type === 'childList') {
+        $.each(mutation.addedNodes, function(index, node) {
+          $.each(lifecycles(node), function(index, node) {
+            $.each(node.whenInsert || [], function(index, callback) {
+              callback();
+            });
+            delete node.whenInsert;
           });
-          delete element.whenRemove;
-        }
-      });
-    }
+        });
+
+        $.each(mutation.removedNodes, function(index, node) {
+          $.each(lifecycles(node), function(index, node) {
+            $.each(node.whenRemove || [], function(index, callback) {
+              callback();
+            });
+            delete node.whenRemove;
+          });
+        });
+      }
+    });
+  });
+
+  $(function() {    
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
   });
 
   $.fn.lifecycle = function(options) {
-    options = options || {};
-
-    element = this.get(0);
+    element = $(this).get(0);
     element.whenInsert = element.whenInsert || [];
     element.whenRemove = element.whenRemove || [];
 
-    if (options.insert) element.whenInsert.push(options.insert);
-    if (options.remove) element.whenRemove.push(options.remove);
+    options = options || {};
+    options.insert && element.whenInsert.push(options.insert);
+    options.remove && element.whenRemove.push(options.remove);
 
-    this.attr('lifecycle', '');
+    $(this).attr('lifecycle', '');
   };
 
-})(jQuery)
+})(jQuery);
