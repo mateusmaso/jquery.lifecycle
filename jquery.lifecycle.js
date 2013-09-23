@@ -37,7 +37,7 @@
   });
 
   $.fn.lifecycle = function(options) {
-    element = $(this).get(0);
+    var element = $(this).get(0);
     element.whenInsert = element.whenInsert || [];
     element.whenRemove = element.whenRemove || [];
 
