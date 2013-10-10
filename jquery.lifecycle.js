@@ -16,7 +16,6 @@
             $.each(node.whenInsert || [], function(index, callback) {
               callback();
             });
-            delete node.whenInsert;
           });
         });
 
@@ -25,7 +24,6 @@
             $.each(node.whenRemove || [], function(index, callback) {
               callback();
             });
-            delete node.whenRemove;
           });
         });
       }
@@ -46,6 +44,14 @@
     options.remove && element.whenRemove.push(options.remove);
 
     $(this).attr('lifecycle', '');
+  };
+
+  $.fn.unlifecycle = function() {
+    var element = $(this).get(0);
+    delete element.whenInsert;
+    delete element.whenRemove;
+    
+    $(this).removeAttr('lifecycle');
   };
 
 })(jQuery);
