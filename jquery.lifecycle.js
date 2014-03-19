@@ -8,6 +8,18 @@
     return nodes;
   };
 
+  var observeAttribute = function(node, callback) {
+    var attributeObserver = new MutationObserver(function(mutations) {
+      $.each(mutations, function(index, mutation) {
+        callback(mutation.attributeName);
+      });
+    });
+
+    attributeObserver.observe(node, { subtree: false, attributes: true });
+
+    return attributeObserver;
+  };
+
   var observer = new MutationObserver(function(mutations) {
     $.each(mutations, function(index, mutation) {
       if (mutation.type === 'childList') {
@@ -31,25 +43,34 @@
   });
 
   $(function() {    
-    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, subtree: true });
   });
 
   $.fn.lifecycle = function(options) {
     var element = $(this).get(0);
+
     element.whenInsert = element.whenInsert || [];
     element.whenRemove = element.whenRemove || [];
+    element.whenChange = element.whenChange || [];
 
     options = options || {};
     options.insert && element.whenInsert.push(options.insert);
     options.remove && element.whenRemove.push(options.remove);
+    options.change && element.whenChange.push(observeAttribute(element, options.change));
 
     $(this).attr('lifecycle', '');
   };
 
   $.fn.unlifecycle = function() {
     var element = $(this).get(0);
+
+    $.each(element.whenChange, function(index, attributeObserver) {
+      attributeObserver.disconnect();
+    });
+
     delete element.whenInsert;
     delete element.whenRemove;
+    delete element.whenChange;
     
     $(this).removeAttr('lifecycle');
   };
