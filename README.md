@@ -5,6 +5,7 @@ jquery.lifecycle
 $(element).lifecycle({
   insert: function() { ... }, 
   remove: function() { ... },
-  change: function() { ... });
+  change: function(attribute) { ... }
+});
 $(element).unlifecycle();
 ```
