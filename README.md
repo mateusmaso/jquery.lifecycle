@@ -1,7 +1,7 @@
 jquery.lifecycle
 ================
 
-This library is an extension for jQuery which allows to observe mutation callbacks in on a single element.
+This library is an extension for jQuery which allows to observe mutation callbacks on a single element.
 
 ### Features
 
