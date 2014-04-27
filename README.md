@@ -3,7 +3,7 @@ jquery.lifecycle
 
 This library is an extension for jQuery which allows to observe mutation callbacks on a single element.
 
-### Features
+## Features
 
 * Listen to insert, remove and change events of an element.
 * Uses Mutation Observer in background.
