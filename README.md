@@ -5,8 +5,8 @@ This library is an extension for jQuery which allows observing mutation callback
 
 ## Features
 
+* Mutation Observer in background.
 * Listen to ```insert```, ```remove``` and ```change``` events of an element.
-* Uses Mutation Observer in background.
 
 ## Dependencies
 
