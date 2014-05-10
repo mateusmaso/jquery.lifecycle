@@ -20,7 +20,7 @@ This library is an extension for jQuery which allows observing mutation callback
 $(element).lifecycle({
   insert: function() { ... }, 
   remove: function() { ... },
-  change: function(attribute) { ... }
+  change: function(attribute, value) { ... }
 });
 ```
 
