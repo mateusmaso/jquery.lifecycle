@@ -1,6 +1,15 @@
-(function($) {
+(function(root, factory) {
 
-  var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+  if (typeof exports !== 'undefined') {
+    var MutationObserver = global.MutationObserver || global.WebKitMutationObserver || global.MozMutationObserver;
+    if (typeof module !== 'undefined' && module.exports)
+      module.exports = factory(global.$, MutationObserver);
+    exports = factory(global.$, MutationObserver);
+  } else {
+    factory(root.$, root.MutationObserver || root.WebKitMutationObserver || root.MozMutationObserver);
+  }
+
+}(this, function($, MutationObserver) {
 
   var lifecycles = function(node) {
     var nodes = $(node).find('[lifecycle]').toArray();
@@ -76,4 +85,4 @@
     $(this).removeAttr('lifecycle');
   };
 
-})(jQuery);
+}));

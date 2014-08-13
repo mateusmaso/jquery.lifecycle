@@ -1,4 +1,4 @@
-jquery.lifecycle
+jquery.lifecycle [![Build Status](https://travis-ci.org/mateusmaso/jquery.lifecycle.svg?branch=master)](https://travis-ci.org/mateusmaso/jquery.lifecycle)
 ================
 
 This library is an extension for jQuery which allows observing mutation callbacks on a single element.
@@ -10,7 +10,7 @@ This library is an extension for jQuery which allows observing mutation callback
 
 ## Dependencies
 
-* jquery.js (>= 2.0)
+* jquery.js (>= 2.1)
 
 ## Examples
 
@@ -18,7 +18,7 @@ This library is an extension for jQuery which allows observing mutation callback
 
 ```javascript
 $(element).lifecycle({
-  insert: function() { ... }, 
+  insert: function() { ... },
   remove: function() { ... },
   change: function(attribute, value) { ... }
 });
