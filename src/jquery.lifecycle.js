@@ -11,9 +11,11 @@
 
 }(this, function($, MutationObserver) {
 
+  var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
   var lifecycles = function(node) {
     var nodes = $(node).find('[lifecycle]').toArray();
-    $(node).is('[lifecycle]') && nodes.push(node);
+    if ($(node).is('[lifecycle]')) nodes.push(node);
     return nodes;
   };
 
@@ -21,11 +23,13 @@
     var attributeObserver = new MutationObserver(function(mutations) {
       $.each(mutations, function(index, mutation) {
         var attribute = node.attributes[mutation.attributeName];
-        callback.apply(node, [mutation.attributeName, (attribute ? attribute.value : undefined)]);
+        if (!attribute || attribute.value != mutation.oldValue) {
+          callback.apply(node, [mutation.attributeName, (attribute ? attribute.value : undefined)]);
+        }
       });
     });
 
-    attributeObserver.observe(node, {subtree: false, attributes: true});
+    attributeObserver.observe(node, {subtree: false, attributes: true, attributeOldValue: true});
 
     return attributeObserver;
   };
@@ -36,16 +40,18 @@
         $.each(mutation.addedNodes, function(index, node) {
           $.each(lifecycles(node), function(index, node) {
             $.each(node.whenInsert || [], function(index, callback) {
-              callback.apply(node);
+              if (!node.inserted) callback.apply(node);
             });
+            node.inserted = true;
           });
         });
 
         $.each(mutation.removedNodes, function(index, node) {
           $.each(lifecycles(node), function(index, node) {
             $.each(node.whenRemove || [], function(index, callback) {
-              callback.apply(node);
+              if (node.inserted) callback.apply(node);
             });
+            node.inserted = false;
           });
         });
       }
@@ -57,32 +63,38 @@
   });
 
   $.fn.lifecycle = function(options) {
-    var element = $(this).get(0);
+    return this.each(function() {
+      var element = $(this)[0];
 
-    element.whenInsert = element.whenInsert || [];
-    element.whenRemove = element.whenRemove || [];
-    element.whenChange = element.whenChange || [];
+      element.inserted = false;
+      element.whenInsert = element.whenInsert || [];
+      element.whenRemove = element.whenRemove || [];
+      element.whenChange = element.whenChange || [];
 
-    options = options || {};
-    if (options.insert) element.whenInsert.push(options.insert);
-    if (options.remove) element.whenRemove.push(options.remove);
-    if (options.change) element.whenChange.push(observeAttribute(element, options.change));
+      options = options || {};
+      if (options.insert) element.whenInsert.push(options.insert);
+      if (options.remove) element.whenRemove.push(options.remove);
+      if (options.change) element.whenChange.push(observeAttribute(element, options.change));
 
-    $(this).attr('lifecycle', '');
+      $(this).attr('lifecycle', '');
+    });
   };
 
   $.fn.unlifecycle = function() {
-    var element = $(this).get(0);
+    return this.each(function() {
+      var element = $(this)[0];
 
-    $.each(element.whenChange, function(index, attributeObserver) {
-      attributeObserver.disconnect();
+      $.each(element.whenChange, function(index, attributeObserver) {
+        attributeObserver.disconnect();
+      });
+
+      delete element.inserted;
+      delete element.whenInsert;
+      delete element.whenRemove;
+      delete element.whenChange;
+
+      $(this).removeAttr('lifecycle');
     });
-
-    delete element.whenInsert;
-    delete element.whenRemove;
-    delete element.whenChange;
-
-    $(this).removeAttr('lifecycle');
   };
 
 }));

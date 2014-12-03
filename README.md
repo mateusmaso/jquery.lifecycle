@@ -1,16 +1,16 @@
 jquery.lifecycle [![Build Status](https://travis-ci.org/mateusmaso/jquery.lifecycle.svg?branch=master)](https://travis-ci.org/mateusmaso/jquery.lifecycle)
 ================
 
-This library is an extension for jQuery which allows observing mutation callbacks on a single element.
+This library is an extension for jQuery which allows observing mutation changes.
 
 ## Features
 
-* Mutation Observer in background.
-* Listen to ```insert```, ```remove``` and ```change``` events of an element.
+* Support of DOM 4 Mutation Observer API.
+* Listen to ```insert```, ```remove``` and ```change``` events.
 
 ## Dependencies
 
-* jquery.js (>= 2.1)
+* jquery.js (>= 2.1.0)
 
 ## Examples
 
