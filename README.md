@@ -5,7 +5,7 @@ This library is an extension for jQuery which allows observing mutation changes.
 
 ## Features
 
-* Support of DOM 4 Mutation Observer API.
+* Support for DOM 4 Mutation Observer API.
 * Listen to ```insert```, ```remove``` and ```change``` events.
 
 ## Dependencies
