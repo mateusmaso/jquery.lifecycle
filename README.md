@@ -20,7 +20,7 @@ This library is an extension for jQuery which allows observing mutation changes.
 $(element).lifecycle({
   insert: function() { ... },
   remove: function() { ... },
-  change: function(attribute, value) { ... }
+  change: function(attribute, value) { ... },
   subtreeChange: function(node) { ... }
 });
 ```
