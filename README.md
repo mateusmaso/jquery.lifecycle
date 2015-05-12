@@ -6,7 +6,7 @@ This library is an extension for jQuery which allows observing mutation changes.
 ## Features
 
 * Support for DOM 4 Mutation Observer API.
-* Listen to ```insert```, ```remove``` and ```change``` events.
+* Listen to ```insert```, ```remove```, ```change``` and ```subtreeChange``` events.
 
 ## Dependencies
 
@@ -21,6 +21,7 @@ $(element).lifecycle({
   insert: function() { ... },
   remove: function() { ... },
   change: function(attribute, value) { ... }
+  subtreeChange: function(node) { ... }
 });
 ```
 

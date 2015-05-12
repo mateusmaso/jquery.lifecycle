@@ -34,6 +34,22 @@
     return attributeObserver;
   };
 
+  var observeSubtree = function(node, callback) {
+    var subtreeObserver = new MutationObserver(function(mutations) {
+      $.each(mutations, function(index, mutation) {
+        if (mutation.type === 'childList') {
+          $.each(mutation.addedNodes, function(index, childrenNode) {
+            callback.apply(node, [childrenNode]);
+          });
+        }
+      });
+    });
+
+    subtreeObserver.observe(node, {childList: true, subtree: true});
+
+    return subtreeObserver;
+  };
+
   var observer = new MutationObserver(function(mutations) {
     $.each(mutations, function(index, mutation) {
       if (mutation.type === 'childList') {
@@ -70,11 +86,13 @@
       element.whenInsert = element.whenInsert || [];
       element.whenRemove = element.whenRemove || [];
       element.whenChange = element.whenChange || [];
+      element.whenSubtreeChange = element.whenSubtreeChange || [];
 
       options = options || {};
       if (options.insert) element.whenInsert.push(options.insert);
       if (options.remove) element.whenRemove.push(options.remove);
       if (options.change) element.whenChange.push(observeAttribute(element, options.change));
+      if (options.subtreeChange) element.whenSubtreeChange.push(observeSubtree(element, options.subtreeChange));
 
       $(this).attr('lifecycle', '');
     });
@@ -86,6 +104,10 @@
 
       $.each(element.whenChange, function(index, attributeObserver) {
         attributeObserver.disconnect();
+      });
+
+      $.each(element.whenSubtreeChange, function(index, subtreeObserver) {
+        subtreeObserver.disconnect();
       });
 
       delete element.inserted;

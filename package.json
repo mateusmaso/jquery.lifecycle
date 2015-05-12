@@ -1,7 +1,7 @@
 {
   "name": "jquery.lifecycle",
   "description": "jQuery plugin for handling DOM 4 lifecycle events with Mutation Observers",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "mateusmaso",
   "keywords": ["jquery", "javascript", "mutation", "observer", "dom"],
   "devDependencies": {

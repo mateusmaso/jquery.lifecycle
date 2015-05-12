@@ -30,6 +30,17 @@ if (navigator.userAgent.indexOf('PhantomJS') < 0)
       this.element.attr("foo", "bar");
     });
 
+    it("should trigger change subtree event", function(done) {
+      this.element.lifecycle({
+        subtreeChange: function(node) {
+          chai.expect($(this).children()[0]).to.be.equal(node);
+          done();
+        }
+      });
+      this.element.appendTo(this.fixtures);
+      this.element.append($("<element>"));
+    });
+
     it("should trigger remove event", function(done) {
       this.element.lifecycle({
         remove: function() {
